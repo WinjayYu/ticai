@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no,address=no" />
+    <title>题材</title>
+    <link rel="stylesheet" href="./css/reset.css">
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header clear">
+            <div class="header_le fl">
+                <p class="up f_size30">1250.00</p>
+                <p class="up f_size15"><span class="up">+1.55</span><span class="up">10.53%</span></p>
+            </div>
+            <div class="header_ri">
+                <div class="header_ri_row">
+                    <div class="ri_item">
+                        <p class="ti_item_text">最高</p>
+                        <p class="up f_size14">1250.00</p>
+                    </div>
+                    <div class="ri_item">
+                        <p class="ti_item_text">最高</p>
+                        <p class="up f_size14">1250.00</p>
+                    </div>
+                    <div class="ri_item">
+                        <p class="ti_item_text">最高</p>
+                        <p class="up f_size14">1250.00</p>
+                    </div>
+                </div>
+                <div class="header_ri_row">
+                    <div class="ri_item">
+                        <p class="ti_item_text">最高</p>
+                        <p class="up f_size14">1250.00</p>
+                    </div>
+                    <div class="ri_item">
+                        <p class="ti_item_text">最高</p>
+                        <p class="up f_size14">15</p>
+                    </div>
+                    <div class="ri_item">
+                        <p class="ti_item_text">最高</p>
+                        <p class="up f_size14">16</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="nav">
+            <span class="active">分时</span><span>日K</span>
+        </div>
+        <div class="chart">
+            <div class="legend">
+                <span>MA</span>
+                <span class="legend_item">
+                    <span class="circle blue"></span>
+                    <span class="legend_num">5:1207.00</span>
+                </span>
+                <span class="legend_item">
+                    <span class="circle orange"></span>
+                    <span class="legend_num">5:1207.00</span>
+                </span>
+                <span class="legend_item">
+                    <span class="circle red"></span>
+                    <span class="legend_num">5:1207.00</span>
+                </span>
+                 <span class="legend_item">
+                    <span class="circle green"></span>
+                    <span class="legend_num">5:1207.00</span>
+                 </span>
+            </div>
+            <div id="candle"> </div>
+            <div id="line"></div>
+            <div class="legend clear">
+                <span class="fl date">09:30</span>
+                <span class="fr date">15:00</span>
+            </div>
+            <div id="column">
+
+            </div>
+        </div>
+        <div class="nav" id="nav_2">
+            <span  id="composition_stock">成分股</span><span class="active" id=news_stock">资讯</span>
+        </div>
+        <div class="composition">
+            <div class="composition_item">
+                <div class="name_code">
+                    <p class="name f_size17">中海有福</p>
+                    <p class="code">601808</p>
+                </div>
+                <div class="price_ratio up f_size18">11.72</div>
+                <div class="price_ratio up f_size18">+10.72%</div>
+            </div>
+            <div class="composition_item">
+                <div class="name_code">
+                    <p class="name f_size17">中海有福</p>
+                    <p class="code">601808</p>
+                </div>
+                <div class="price_ratio up f_size18">11.72</div>
+                <div class="price_ratio up f_size18">+10.72%</div>
+            </div>
+            <div class="composition_item">
+                <div class="name_code">
+                    <p class="name f_size17">中海有福</p>
+                    <p class="code">601808</p>
+                </div>
+                <div class="price_ratio up f_size18">11.72</div>
+                <div class="price_ratio up f_size18">+10.72%</div>
+            </div>
+        </div>
+        <div class="news">
+            <div class="news_item">
+                <p class="news_title f_size16">茅台提价董事长告诫经销商：不要炒 让消费者喝起来</p>
+                <p class="source_time"><span class="source">新浪财经</span><span class="time">14:09</span></p>
+            </div>
+            <div class="news_item">
+                <p class="news_title f_size16">茅台提价董事长告诫经销商：不要炒 让消费者喝起来</p>
+                <p class="source_time"><span class="source">新浪财经</span><span class="time">14:09</span></p>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="https://cdn.upchinapro.com/assert/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://cdn.upchina.com/zxjt_stock_diagnosis/highcharts/highcharts.mini.js"></script>
+<script>
+  $('.nav').on('click', function (e) {
+       $(this).find('.active').removeClass();
+       $(e.target).addClass('active');
+       if(e.currentTarget.id === 'nav_2') {
+         if(e.target.id === 'composition_stock') {
+           $('.composition').show();
+           $('.news').hide();
+         } else {
+           $('.news').show();
+           $('.composition').hide();
+         }
+       }
+  });
+
+  var data = [];
+  var totalLength = 251;
+  var currentLength = Math.ceil(Math.random()*251);
+  var divWidth = currentLength / totalLength * 100 + '%';
+  $('#line').css('width', divWidth);
+  $('#column').css('width', divWidth);
+  for(var i = 0; i < currentLength; i++) {
+   data.push(Math.random());
+  }
+
+  // 折线图
+  Highcharts.chart({
+    chart: {
+      renderTo: document.querySelector('#line'),
+      backgroundColor: 'transparent',
+      space: [0,0,0,0],
+      events: {
+        load: function () {
+          var series = this.series[0];
+          var len = series.data.length;
+          console.log(series);
+          this.addSeries({
+            id: 'end point',
+            type: 'scatter',
+            marker: {
+              enabled:true,
+              symbol:'circle',
+              radius:3,
+              fillColor:'#3691E1',
+              lineColor: 'rgba(99,149,238, 0.5)',
+              lineWidth:8
+            },
+            data: [[
+              series.data[len - 1].x,
+              series.data[len - 1].y
+            ]]
+          });
+        }
+      }
+    },
+    credits: {
+      enabled: false
+    },
+    title: {
+      text: ''
+    },
+    xAxis: {
+      visible: false,
+      crosshair: {
+        width: 1,
+        color: '#333'
+      }
+    },
+    yAxis: {
+      title: {
+        text: ''
+      },
+      visible: false,
+      crosshair: {
+        width: 1,
+        color: '#333'
+      }
+    },
+    legend: {
+      enabled: false,
+    },
+    plotOptions: {
+      area: {
+        marker: {
+          enabled: false
+        }
+      },
+      series: {
+        animation: false,
+        enableMouseTracking: true,
+        lineWidth: 1,
+        states: {
+          hover: {
+            enabled: false  // 关闭点击时出现marker
+          }
+        }
+      }
+    },
+    series:[{
+      type: 'area',
+      name: 'Moc',
+      color: '#3691E1',
+      lineWidth: 1,
+      fillColor: {
+        linearGradient: {
+          x1: 0,
+          y1: 0,
+          x2: 0,
+          y2: 1
+        },
+        stops: [
+          [0, 'rgba(220, 232, 254, 1)'],
+          [1, 'rgba(220, 232, 254, 0)']
+        ]
+      },
+      data: data
+    }]
+  });
+
+  var columnData = [];
+  for(var i = 0; i < currentLength; i++) {
+    columnData.push(Math.random());
+  }
+
+  // 柱状图
+  Highcharts.chart({
+    chart: {
+      type: 'column',
+      renderTo: document.getElementById('column'),
+      backgroundColor: 'transparent',
+      space: [0,0,0,0],
+    },
+    credits: {
+      enabled: false
+    },
+    title: {
+      text: ''
+    },
+    xAxis: {
+      visible: false,
+      crosshair: {
+        width: 1,
+        color: '#333'
+      }
+    },
+    yAxis: {
+      title: {
+        text: ''
+      },
+      visible: false,
+      crosshair: {
+        width: 1,
+        color: '#333'
+      },
+    },
+    legend: {
+      enabled: false,
+    },
+    plotOptions: {
+      area: {
+        marker: {
+          enabled: false
+        }
+      },
+      series: {
+        animation: false,
+        enableMouseTracking: true,
+        lineWidth: 1,
+        states: {
+          hover: {
+            enabled: false  // 关闭点击时出现marker
+          }
+        }
+      },
+    },
+    series: [{
+      type: 'column',
+      name: 'And',
+      color: '#E94D2E',
+      data: columnData,
+    }]
+  });
+
+</script>
+</html>
