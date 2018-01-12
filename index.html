@@ -123,7 +123,7 @@
     </div>
 </body>
 <script src="https://cdn.upchinapro.com/assert/jquery/3.2.1/jquery.min.js"></script>
-<script src="https://cdn.upchina.com/zxjt_stock_diagnosis/highcharts/highcharts.mini.js"></script>
+<script src="https://cdn.upchina.com/zxjt_stock_diagnosis/highcharts/highstock.js"></script>
 <script>
   $('.nav').on('click', function (e) {
        $(this).find('.active').removeClass();
@@ -140,8 +140,8 @@
   });
 
   var data = [];
-  var totalLength = 251;
-  var currentLength = Math.ceil(Math.random()*251);
+  var totalLength = 25;
+  var currentLength = Math.ceil(Math.random()*25);
   var divWidth = currentLength / totalLength * 100 + '%';
   $('#line').css('width', divWidth);
   $('#column').css('width', divWidth);
@@ -149,16 +149,28 @@
    data.push(Math.random());
   }
 
+  var columnData = [];
+  for(var i = 0; i < currentLength; i++) {
+    columnData.push(Math.random());
+  }
+
+
   // 折线图
-  Highcharts.chart({
+  Highcharts.stockChart({
     chart: {
+      resetZoomButton: {
+        theme: {
+          display: 'none',
+        },
+      },
       renderTo: document.querySelector('#line'),
       backgroundColor: 'transparent',
-      space: [0,0,0,0],
+      spacing: 15,
       events: {
         load: function () {
           var series = this.series[0];
-          var len = series.data.length;
+          var len = series.yData.length;
+console.log(series.yData[len - 1], len)
           console.log(series);
           this.addSeries({
             id: 'end point',
@@ -172,36 +184,93 @@
               lineWidth:8
             },
             data: [[
-              series.data[len - 1].x,
-              series.data[len - 1].y
+              series.xData[len - 1],
+              series.yData[len - 1]
             ]]
           });
+
+//          var pointLength = series.points.length;
+//          var point = series.points[pointLength - 1];
+//          var v = {
+//            y: point.y,
+//            x: point.x,
+//            marker: {
+//              enabled:true,
+//              symbol:'circle',
+//              radius:3,
+//              fillColor:'#3691E1',
+//              lineColor: 'rgba(99,149,238, 0.5)',
+//              lineWidth:8
+//            },
+//          };
+//          series.addPoint(v, true, true);
         }
       }
+    },
+    lang: {
+      rangeSelectorZoom: '',
+      resetZoom: '',
+    },
+    scrollbar: {
+      enabled: false
     },
     credits: {
       enabled: false
     },
+    rangeSelector: {
+      allButtonsEnable: false,
+      enabled: false,
+    },
+    tooltip: {
+      enabled: false,
+    },
     title: {
       text: ''
     },
+    navigator: {
+      enabled: false,
+    },
+    exporting: {
+      enabled: false,
+    },
     xAxis: {
-      visible: false,
+//      visible: false,
       crosshair: {
         width: 1,
         color: '#333'
-      }
+      },
+      labels: {
+        enabled: false,
+      },
     },
-    yAxis: {
+    yAxis: [{
       title: {
         text: ''
       },
+//      visible: false,
+      height: '60%',
+      crosshair: {
+        width: 1,
+        color: '#333'
+      },
+    },{
+      labels: {
+        align: 'right',
+        x: -3
+      },
       visible: false,
+      title: {
+        text: ''
+      },
+      top: '65%',
+      height: '35%',
+      offset: 0,
+      lineWidth: 2,
       crosshair: {
         width: 1,
         color: '#333'
       }
-    },
+    }],
     legend: {
       enabled: false,
     },
@@ -218,6 +287,12 @@
         states: {
           hover: {
             enabled: false  // 关闭点击时出现marker
+          }
+        },
+        cursor: 'pointer',
+        events: {
+          click: function(e) {
+            console.log(e);
           }
         }
       }
@@ -239,73 +314,16 @@
           [1, 'rgba(220, 232, 254, 0)']
         ]
       },
-      data: data
+      data: data,
+    },{
+      type: 'column',
+      name: 'Volume',
+      data: data,
+      yAxis: 1,
+//      lineWidth: 1
     }]
   });
 
-  var columnData = [];
-  for(var i = 0; i < currentLength; i++) {
-    columnData.push(Math.random());
-  }
-
-  // 柱状图
-  Highcharts.chart({
-    chart: {
-      type: 'column',
-      renderTo: document.getElementById('column'),
-      backgroundColor: 'transparent',
-      space: [0,0,0,0],
-    },
-    credits: {
-      enabled: false
-    },
-    title: {
-      text: ''
-    },
-    xAxis: {
-      visible: false,
-      crosshair: {
-        width: 1,
-        color: '#333'
-      }
-    },
-    yAxis: {
-      title: {
-        text: ''
-      },
-      visible: false,
-      crosshair: {
-        width: 1,
-        color: '#333'
-      },
-    },
-    legend: {
-      enabled: false,
-    },
-    plotOptions: {
-      area: {
-        marker: {
-          enabled: false
-        }
-      },
-      series: {
-        animation: false,
-        enableMouseTracking: true,
-        lineWidth: 1,
-        states: {
-          hover: {
-            enabled: false  // 关闭点击时出现marker
-          }
-        }
-      },
-    },
-    series: [{
-      type: 'column',
-      name: 'And',
-      color: '#E94D2E',
-      data: columnData,
-    }]
-  });
 
 </script>
 </html>
