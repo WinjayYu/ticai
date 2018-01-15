@@ -1,3 +1,8 @@
+
+* {
+    -webkit-text-size-adjust: none;
+}
+
 .container .f_size30 {
     font-size: 30px;
 }
@@ -20,6 +25,10 @@
 
 .container .f_size17 {
     font-size: 17px;
+}
+
+.container .f_size12 {
+    font-size: 12px;
 }
 
 .container .up {
@@ -81,7 +90,7 @@
     line-height: 35px;
 }
 
-.container .nav span {
+.container .nav .nav_s {
     display: inline-block;
     width: 50%;
     text-align: center;
@@ -143,7 +152,7 @@
 }
 
 .container .chart #line {
-    height: 245px;
+    height: 255px;
 }
 
 .container .chart .date {
@@ -213,4 +222,87 @@ display: none;
 
 .container .chart #column {
     height: 70px;
+}
+
+.container .wrap_chart {
+    position: relative;
+    margin: 0 6px;
+}
+
+.container .wrap_chart_cut {
+    position: absolute;
+    width: 100%;
+    border: 1px solid #E7E7E7;
+    box-sizing: border-box;
+}
+
+.container .wrap_chart_cut.cut_top {
+    height: 170px;
+}
+
+.container .wrap_chart_cut.cut_bottom {
+    height: 70px;
+    bottom: 0;
+}
+
+.container .chart .cut_off_column {
+    width: 1px;
+    height: 100%;
+    background-color: #E7E7E7;
+    position: absolute;
+    left: 50%;
+}
+
+.container .chart .cut_off_row {
+    width: 100%;
+    height: 1px;
+    background-color: #E7E7E7;
+    position: absolute;
+    top: 50%;
+}
+
+.container .chart .quotation_top {
+    width: 98%;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+}
+
+.container .chart .quotation_bottom {
+    width: 98%;
+    position: absolute;
+    bottom: 2px;
+    left: 2px;
+}
+
+.container .chart .quotation_top .vol{
+    margin-left: 133px;
+}
+
+.container .chart .middle_legend {
+    height: 15px;
+    font-size: 10px;
+    color: rgba(17,17,17,0.80);
+    line-height: 15px;
+    font-family: PingFangSC-Regular;
+    position: absolute;
+    top: 170px;
+}
+
+.container .chart .middle_legend .middle_item:last-child {
+    margin-left: 70px;
+}
+
+.container .show_price {
+    display: flex;
+    font-size: 12px;
+    display: none;
+}
+
+.container .show_price div {
+    flex: 1;
+}
+
+.container .nav.show_price em{
+    margin-left: 15px;
 }

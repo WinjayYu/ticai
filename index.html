@@ -48,8 +48,15 @@
                 </div>
             </div>
         </div>
-        <div class="nav">
-            <span class="active">分时</span><span>日K</span>
+        <div class="nav" id="nav_1">
+            <span class="active nav_s">分时</span><span class="nav_s">日K</span>
+        </div>
+        <div class="nav show_price">
+            <em class="time">13:09</em>
+            <em class="time">价:<span class="up" id="pri">1250.00</span></em>
+            <em class="time">价:<span class="up">1250.00</span></em>
+            <em class="time">价:<span class="up">1250.00</span></em>
+            <em class="time">价:<span class="up">1250.00</span></em>
         </div>
         <div class="chart">
             <div class="legend">
@@ -72,17 +79,30 @@
                  </span>
             </div>
             <div id="candle"> </div>
-            <div id="line"></div>
+            <div class="wrap_chart">
+                <div class="wrap_chart_cut cut_top">
+                    <div class="quotation_top clear"><span class="quotation_left fl up f_size12">1257.32</span><span class="quotation_right fr up f_size12">1.03%</span></div>
+                    <div class="cut_off_row"></div>
+                    <div class="cut_off_column"></div>
+                    <div class="quotation quotation_bottom clear"><span class="quotation_left fl up f_size12">1257.32</span><span class="quotation_right fr up f_size12">1.03%</span></div>
+                </div>
+                <div class="wrap_chart_cut cut_bottom">
+                    <div class="quotation_top clear"><span class="f_size12">3.80万</span><span class="vol f_size12">VOL</span></div>
+                    <div class="cut_off_row"></div>
+                    <div class="cut_off_column"></div>
+                </div>
+                <div class="middle_legend">
+                    <span class="middle_item">成交量:2.78万</span><span class="middle_item">成交额:2325.78万</span>
+                </div>
+                <div id="line"></div>
+            </div>
             <div class="legend clear">
                 <span class="fl date">09:30</span>
                 <span class="fr date">15:00</span>
             </div>
-            <div id="column">
-
-            </div>
         </div>
         <div class="nav" id="nav_2">
-            <span  id="composition_stock">成分股</span><span class="active" id=news_stock">资讯</span>
+            <span class="nav_s" id="composition_stock">成分股</span><span class="nav_s active" id=news_stock">资讯</span>
         </div>
         <div class="composition">
             <div class="composition_item">
@@ -126,7 +146,7 @@
 <script src="https://cdn.upchina.com/zxjt_stock_diagnosis/highcharts/highstock.js"></script>
 <script>
   $('.nav').on('click', function (e) {
-       $(this).find('.active').removeClass();
+       $(this).find('.active').removeClass('active');
        $(e.target).addClass('active');
        if(e.currentTarget.id === 'nav_2') {
          if(e.target.id === 'composition_stock') {
@@ -139,21 +159,25 @@
        }
   });
 
+
   var data = [];
-  var totalLength = 25;
-  var currentLength = Math.ceil(Math.random()*25);
+  var totalLength = 251;
+  var currentLength = Math.ceil(Math.random()*251);
   var divWidth = currentLength / totalLength * 100 + '%';
+console.log(currentLength);
   $('#line').css('width', divWidth);
   $('#column').css('width', divWidth);
   for(var i = 0; i < currentLength; i++) {
-   data.push(Math.random());
+   data.push(Math.random().toFixed(2) / 1);
   }
 
-  var columnData = [];
-  for(var i = 0; i < currentLength; i++) {
-    columnData.push(Math.random());
-  }
 
+  var colors =  data.map(v => v >= 0.7 ? '#E94D2E': '#38AB48')
+  console.log(colors)
+
+  var $nav1 = $('#nav_1');
+  var $showPrice = $('.show_price');
+  var $pri = $('#pri');
 
   // 折线图
   Highcharts.stockChart({
@@ -165,12 +189,11 @@
       },
       renderTo: document.querySelector('#line'),
       backgroundColor: 'transparent',
-      spacing: 15,
+      spacing: [0, 8, 0, 0],
       events: {
         load: function () {
           var series = this.series[0];
           var len = series.yData.length;
-console.log(series.yData[len - 1], len)
           console.log(series);
           this.addSeries({
             id: 'end point',
@@ -189,21 +212,6 @@ console.log(series.yData[len - 1], len)
             ]]
           });
 
-//          var pointLength = series.points.length;
-//          var point = series.points[pointLength - 1];
-//          var v = {
-//            y: point.y,
-//            x: point.x,
-//            marker: {
-//              enabled:true,
-//              symbol:'circle',
-//              radius:3,
-//              fillColor:'#3691E1',
-//              lineColor: 'rgba(99,149,238, 0.5)',
-//              lineWidth:8
-//            },
-//          };
-//          series.addPoint(v, true, true);
         }
       }
     },
@@ -234,7 +242,7 @@ console.log(series.yData[len - 1], len)
       enabled: false,
     },
     xAxis: {
-//      visible: false,
+      visible: false,
       crosshair: {
         width: 1,
         color: '#333'
@@ -247,25 +255,25 @@ console.log(series.yData[len - 1], len)
       title: {
         text: ''
       },
-//      visible: false,
-      height: '60%',
+      visible: false,
+      height: '66.5%',
       crosshair: {
         width: 1,
         color: '#333'
       },
-    },{
-      labels: {
-        align: 'right',
-        x: -3
+      resize: {
+        enabled: true
       },
+      lineWidth: 1,
+    },{
       visible: false,
       title: {
         text: ''
       },
-      top: '65%',
-      height: '35%',
+      top: '72.5%',
+      height: '45%',
       offset: 0,
-      lineWidth: 2,
+      lineWidth: 1,
       crosshair: {
         width: 1,
         color: '#333'
@@ -292,7 +300,19 @@ console.log(series.yData[len - 1], len)
         cursor: 'pointer',
         events: {
           click: function(e) {
-            console.log(e);
+            $nav1.hide();
+            $showPrice.show();
+            $pri.text((Math.random() * 100).toFixed(2));
+//            console.log(e);
+          },
+          mouseOver: function (e) {
+            $nav1.hide();
+            $showPrice.show();
+            $pri.text((Math.random() * 100).toFixed(2));
+          },
+          mouseOut: function (e) {
+            $showPrice.hide();
+            $nav1.show();
           }
         }
       }
@@ -315,12 +335,19 @@ console.log(series.yData[len - 1], len)
         ]
       },
       data: data,
+      dataGrouping: {
+        enabled: false
+      }
     },{
+      colorByPoint: true,
+      colors: colors,
       type: 'column',
       name: 'Volume',
       data: data,
       yAxis: 1,
-//      lineWidth: 1
+      dataGrouping: {
+        enabled: false
+      }
     }]
   });
 
