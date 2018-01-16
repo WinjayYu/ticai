@@ -49,7 +49,7 @@
             </div>
         </div>
         <div class="nav" id="nav_1">
-            <span class="active nav_s">分时</span><span class="nav_s">日K</span>
+            <span class="active nav_s" id="minute">分时</span><span class="nav_s" id="day">日K</span>
         </div>
         <div class="nav show_price">
             <em class="time">13:09</em>
@@ -78,8 +78,7 @@
                     <span class="legend_num">5:1207.00</span>
                  </span>
             </div>
-            <div id="candle"> </div>
-            <div class="wrap_chart">
+            <div class="wrap_chart line_chart">
                 <div class="wrap_chart_cut cut_top">
                     <div class="quotation_top clear"><span class="quotation_left fl up f_size12">1257.32</span><span class="quotation_right fr up f_size12">1.03%</span></div>
                     <div class="cut_off_row"></div>
@@ -96,9 +95,27 @@
                 </div>
                 <div id="line"></div>
             </div>
+            <div class="wrap_chart candle_chart" style="display: none">
+                <div class="wrap_chart_cut cut_top">
+                    <div class="quotation_top clear"><span class="quotation_left fl up f_size12">1257.32</span><span class="quotation_right fr up f_size12">1.03%</span></div>
+                    <div class="cut_off_row"></div>
+                    <div class="cut_off_column"></div>
+                    <div class="quotation quotation_bottom clear"><span class="quotation_left fl up f_size12">1257.32</span><span class="quotation_right fr up f_size12">1.03%</span></div>
+                </div>
+                <div class="wrap_chart_cut cut_bottom">
+                    <div class="quotation_top clear"><span class="f_size12">3.80万</span><span class="vol f_size12">VOL</span></div>
+                    <div class="cut_off_row"></div>
+                    <div class="cut_off_column"></div>
+                </div>
+                <div class="middle_legend">
+                    <span class="middle_item">成交量:2.78万</span><span class="middle_item">成交额:2325.78万</span>
+                </div>
+                <div id="candle"> </div>
+            </div>
+
             <div class="legend clear">
-                <span class="fl date">09:30</span>
-                <span class="fr date">15:00</span>
+                <span class="fl date">2018-01-15</span>
+                <span class="fr date">2018-03-15</span>
             </div>
         </div>
         <div class="nav" id="nav_2">
@@ -156,6 +173,14 @@
            $('.news').show();
            $('.composition').hide();
          }
+       } else if (e.currentTarget.id === 'nav_1') {
+         if(e.target.id === 'minute') {
+           $('.line_chart').show();
+           $('.candle_chart').hide();
+         } else {
+           $('.candle_chart').show();
+           $('.line_chart').hide();
+         }
        }
   });
 
@@ -164,7 +189,6 @@
   var totalLength = 251;
   var currentLength = Math.ceil(Math.random()*251);
   var divWidth = currentLength / totalLength * 100 + '%';
-console.log(currentLength);
   $('#line').css('width', divWidth);
   $('#column').css('width', divWidth);
   for(var i = 0; i < currentLength; i++) {
@@ -172,7 +196,7 @@ console.log(currentLength);
   }
 
 
-  var colors =  data.map(v => v >= 0.7 ? '#E94D2E': '#38AB48')
+  var colors =  data.map(v => v >= 0.7 ? '#E94D2E': '#38AB48');
   console.log(colors)
 
   var $nav1 = $('#nav_1');
@@ -265,13 +289,14 @@ console.log(currentLength);
         enabled: true
       },
       lineWidth: 1,
+      tickInterval: 0.2,
     },{
       visible: false,
       title: {
         text: ''
       },
       top: '72.5%',
-      height: '45%',
+      height: '27.5%',
       offset: 0,
       lineWidth: 1,
       crosshair: {
@@ -351,6 +376,216 @@ console.log(currentLength);
     }]
   });
 
+  // 蜡烛图
+  $.getJSON('https://www.highcharts.com/samples/data/jsonp.php?filename=aapl-ohlcv.json&callback=?', function (data) {
 
+    // split the data set into ohlc and volume
+    var ohlc = [],
+      volume = [],
+      i = 0;
+
+    for (i; i < 50; i++) {
+      ohlc.push([
+        data[i][0], // the date
+        data[i][1], // open
+        data[i][2], // high
+        data[i][3], // low
+        data[i][4] // close
+      ]);
+
+      volume.push({
+        x: data[i][0],
+        y: data[i][5],
+        color: data[i][4] - data[i][1] < 0 ? '#0DB14B' : (data[i][4] - data[i][1] === 0 ? '#ACADAF' : '#FF5A00')
+      })
+    }
+
+    const renderData = ohlc.map(v => {
+      var obj = {};
+      obj.x = v[0];
+      obj.open = v[1];
+      obj.high = v[2];
+      obj.low = v[3];
+      obj.close = v[4];
+      const differ = obj.close - obj.open;
+      const c = differ < 0 ? '#0DB14B' : (differ === 0 ? '#ACADAF' : '#FF5A00');
+      obj.color = c;
+      obj.lineColor = c;
+      return obj;
+    });
+
+
+    function calculateMA(dayCount) {
+      var result = [];
+      for (var i = 0, len = ohlc.length; i < len; i++) {
+        if (i < dayCount) {
+          result.push('-');
+          continue;
+        }
+        var sum = 0;
+        for (var j = 0; j < dayCount; j++) {
+          sum += ohlc[i - j][1];
+        }
+        result.push([ohlc[i][0], sum / dayCount]);
+      }
+      return result;
+    }
+
+
+    // create the chart
+    Highcharts.stockChart({
+
+      chart: {
+        resetZoomButton: {
+          theme: {
+            display: 'none',
+          },
+        },
+        renderTo: document.querySelector('#candle'),
+        backgroundColor: 'transparent',
+        spacing: 0,
+      },
+
+      lang: {
+        rangeSelectorZoom: '',
+        resetZoom: '',
+      },
+      scrollbar: {
+        enabled: false
+      },
+      credits: {
+        enabled: false
+      },
+      rangeSelector: {
+        allButtonsEnable: false,
+        enabled: false,
+      },
+      tooltip: {
+        enabled: false,
+      },
+      title: {
+        text: ''
+      },
+      navigator: {
+        enabled: false,
+      },
+      exporting: {
+        enabled: false,
+      },
+      xAxis: {
+        visible: false,
+        crosshair: {
+          width: 1,
+          color: '#333'
+        },
+        labels: {
+          enabled: false,
+        },
+      },
+      yAxis: [{
+        visible: false,
+        title: {
+          text: ''
+        },
+        height: '66.5%',
+        resize: {
+          enabled: true
+        },
+        crosshair: {
+          width: 1,
+          color: '#333'
+        },
+        lineWidth: 1,
+      }, {
+        visible: false,
+        labels: {
+          enable: false,
+        },
+        title: {
+          text: ''
+        },
+        top: '72.5%',
+        height: '27.5%',
+        offset: 0,
+        lineWidth: 1,
+        crosshair: {
+          width: 1,
+          color: '#333'
+        },
+      }],
+      plotOptions: {
+        animation: false,
+        enableMouseTracking: true,
+        lineWidth: 1,
+        states: {
+          hover: {
+            enabled: false  // 关闭点击时出现marker
+          }
+        },
+        cursor: 'pointer',
+      },
+
+      series: [{
+        type: 'candlestick',
+        name: 'AAPL',
+        id: 'aapl',
+        zIndex: 2,
+        allowPointSelect: false,
+        data: renderData,
+        dataGrouping: {
+          enabled: false
+        }
+      }, {
+        type: 'column',
+        name: 'Volume',
+        id: 'volume',
+        data: volume,
+        yAxis: 1,
+        animation:false,
+        dataGrouping: {
+          enabled: false
+        }
+      },{
+        type: 'line',
+        color: '#1aadce',
+        data: calculateMA(5),
+        lineWidth:1,
+        zIndex: 1,
+        linkedTo: 'aapl',
+        dataGrouping: {
+          enabled: false
+        },
+        marker: {
+          enabled: false
+        },
+        states: {
+          hover: {
+            enabled: false  // 关闭点击时出现marker
+          }
+        },
+        animation: false,
+      },{
+        type: 'line',
+        color: 'red',
+        data: volume,
+        lineWidth:1,
+        zIndex: 1,
+        linkedTo: 'aapl',
+        dataGrouping: {
+          enabled: false
+        },
+        marker: {
+          enabled: false
+        },
+        yAxis: 1,
+        states: {
+          hover: {
+            enabled: false  // 关闭点击时出现marker
+          }
+        },
+        animation: false,
+      }]
+    });
+  });
 </script>
 </html>

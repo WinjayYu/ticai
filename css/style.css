@@ -151,7 +151,8 @@
     background-color: #19B2B0 ;
 }
 
-.container .chart #line {
+.container .chart #line,
+.container .chart #candle{
     height: 255px;
 }
 
@@ -306,3 +307,4 @@ display: none;
 .container .nav.show_price em{
     margin-left: 15px;
 }
+
